@@ -26,7 +26,12 @@ export default class Camera {
 
     async startWebcam() {
 
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: this.container.offsetWidth,
+                height: this.container.offsetHeight
+            }
+        })
         
         this.video.srcObject = stream
         this.video.onloadedmetadata = () => this.video.play()
