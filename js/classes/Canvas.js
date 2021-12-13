@@ -1,3 +1,6 @@
+import gsap from "gsap"
+import { RoughEase } from "gsap/EasePack"
+
 const lerp = (a, b, t) => a + (b - a) * t
 
 export default class Canvas {
@@ -9,13 +12,15 @@ export default class Canvas {
         this.model = model
 
         this.handPosition = { x: this.size.width / 2, y: this.size.height / 2 }
+        this.animationState = { flicker: 0 }
 
         this.createCanvas()
         this.addEventListeners()
 
         if(autoplay) {
 
-            this.startAnimation()
+            this.startGsapAnimation()
+            this.startAnimationFrame()
 
         }
 
@@ -53,7 +58,22 @@ export default class Canvas {
 
     }
 
-    startAnimation() {
+    startGsapAnimation() {
+
+        gsap.fromTo(this.animationState, 
+            { flicker: 0 }, 
+            { 
+                duration: 0.5, 
+                flicker: 0.25, 
+                repeat: -1, 
+                yoyo: true,
+                ease: RoughEase.ease.config({ strength: 0.3, points: 8, randomize: false })
+            }
+        )
+
+    }
+
+    startAnimationFrame() {
 
         const animate = async () => {
         
@@ -77,8 +97,8 @@ export default class Canvas {
 
             // draw gradient
             const { x, y } = this.handPosition
-            const gradient = this.ctx.createRadialGradient(x, y, 50, x, y, 100)
-            gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)")
+            const gradient = this.ctx.createRadialGradient(x, y, 50, x, y, 125)
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${ this.animationState.flicker })`)
             gradient.addColorStop(1, "rgba(0, 0, 0, 0.9)")
 
             this.ctx.fillStyle = gradient

@@ -10,6 +10,7 @@
     "vite": "^2.7.2"
   },
   "dependencies": {
+    "gsap": "^3.8.0",
     "handsfree": "^8.5.1"
   }
 }
